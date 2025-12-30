@@ -108,7 +108,7 @@ func NewDNSProviderCredentials(baseURL, email, key, token string, dns01Nameserve
 // Calling See https://api.cloudflare.com/#zone-list-zones
 func FindNearestZoneForFQDN(c DNSProviderType, fqdn string) (DNSZone, error) {
 	if fqdn == "" {
-		return DNSZone{}, fmt.Errorf("FindNearestZoneForFQDN: FQDN-Parameter can't be empty, please specify a domain!")
+		return DNSZone{}, fmt.Errorf("findNearestZoneForFQDN: FQDN-Parameter can't be empty, please specify a domain")
 	}
 	mappedFQDN := strings.Split(fqdn, ".")
 	nextName := util.UnFqdn(fqdn) // remove the trailing dot
@@ -142,7 +142,7 @@ func FindNearestZoneForFQDN(c DNSProviderType, fqdn string) (DNSZone, error) {
 	if lastErr != nil {
 		return DNSZone{}, fmt.Errorf("while attempting to find Zones for domain %s\n%s", fqdn, lastErr)
 	}
-	return DNSZone{}, fmt.Errorf("Found no Zones for domain %s (neither in the sub-domain nor in the SLD) please make sure your domain-entries in the config are correct and the API key is correctly setup with Zone.read rights.", fqdn)
+	return DNSZone{}, fmt.Errorf("found no Zones for domain %s (neither in the sub-domain nor in the SLD) please make sure your domain-entries in the config are correct and the API key is correctly setup with Zone.read rights", fqdn)
 }
 
 // Present creates a TXT record to fulfil the dns-01 challenge
@@ -216,7 +216,7 @@ func (c *DNSProvider) getHostedZoneID(fqdn string) (string, error) {
 	return hostedZone.ID, nil
 }
 
-var errNoExistingRecord = errors.New("No existing record found")
+var errNoExistingRecord = errors.New("no existing record found")
 
 func (c *DNSProvider) findTxtRecord(fqdn string) (*cloudFlareRecord, error) {
 	zoneID, err := c.getHostedZoneID(fqdn)
@@ -286,7 +286,7 @@ func (c *DNSProvider) makeRequest(method, uri string, body io.Reader) (json.RawM
 		return nil, fmt.Errorf("while querying the Cloudflare API for %s %q: %v", method, uri, err)
 	}
 
-	defer resp.Body.Close()
+	defer resp.Body.Close() // nolint:errcheck
 
 	var r APIResponse
 	err = json.NewDecoder(resp.Body).Decode(&r)
