@@ -50,7 +50,8 @@ func main() {
 		panic("GROUP_NAME must be specified")
 	}
 
-	cmd.RunWebhookServer(groupName,
+	cmd.RunWebhookServer(
+		groupName,
 		&aceDNSProviderSolver{ctx: ctx},
 	)
 }
